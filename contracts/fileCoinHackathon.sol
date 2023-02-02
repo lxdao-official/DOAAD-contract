@@ -14,7 +14,7 @@ contract FileContract {
 
     struct Paper {
         string paperName;
-        string paperHash;
+        string paperCid;
         uint256 citedCount;
         uint256 publishTime;
         address author;
@@ -39,7 +39,7 @@ contract FileContract {
         return Papers[_paperId].citedCount;
     }
 
-    function getCideCount(uint256 _paperId) public view returns (uint256) {
+    function getCiteCount(uint256 _paperId) public view returns (uint256) {
         return Papers[_paperId].citeTargetList.length;
     }
 
@@ -48,9 +48,9 @@ contract FileContract {
         string memory paperCid,
         uint256[] memory citeTargetList
     ) public payable {
-        // tudo 找爷爷
+        // tudo get elder paper
         require(msg.value>=citeFee*citeTargetList.length,"fee not enough");
-        uint256 newPaperId = paperId + 1;
+        
 
         for (uint256 i; i < citeTargetList.length; i++) {
             require(paperIdExist(citeTargetList[i]));
@@ -58,7 +58,7 @@ contract FileContract {
             payable(Papers[citeTargetList[i]].author).transfer(citeFee);
         }
 
-        Papers[newPaperId] = Paper(
+        Papers[paperId] = Paper(
             paperName,
             paperCid,
             0,
@@ -67,10 +67,11 @@ contract FileContract {
             citeTargetList
         );
         PaperBalance[msg.sender]++;
+        paperId += 1;
     }
 
     function getPaper(uint256 _paperId) external view returns (Paper memory) {
-        require(_paperId <= paperId, "paper not exist");
+        require(_paperId < paperId, "paper not exist");
         return Papers[_paperId];
     }
 
