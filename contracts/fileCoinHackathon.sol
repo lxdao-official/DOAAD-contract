@@ -7,7 +7,8 @@ contract FileContract {
     mapping(address => bool) AdminList;
     mapping(uint256 => Paper) Papers;
     mapping(address => uint256) PaperBalance;
-
+    mapping(address => uint256) public AuthorBalance;
+    mapping(address => string) public AuthorIntro;
     constructor(uint256 _citeFee) {
         citeFee = _citeFee;
     }
@@ -17,6 +18,7 @@ contract FileContract {
         string paperCid;
         uint256 citedCount;
         uint256 publishTime;
+        uint256 paperId;
         address author;
         uint256[] citeTargetList;
     }
@@ -56,6 +58,7 @@ contract FileContract {
             require(paperIdExist(citeTargetList[i]));
             Papers[citeTargetList[i]].citedCount++;
             payable(Papers[citeTargetList[i]].author).transfer(citeFee);
+            AuthorBalance[Papers[citeTargetList[i]].author]+=citeFee;
         }
 
         Papers[paperId] = Paper(
@@ -63,6 +66,7 @@ contract FileContract {
             paperCid,
             0,
             block.timestamp,
+            paperId,
             msg.sender,
             citeTargetList
         );
@@ -74,6 +78,7 @@ contract FileContract {
         require(_paperId < paperId, "paper not exist");
         return Papers[_paperId];
     }
+
 
     function getPaperList() external view returns (Paper[] memory) {
         uint256 paperCount = PaperBalance[msg.sender];
@@ -90,11 +95,23 @@ contract FileContract {
         return paperList;
     }
 
+    function getAllPaper() external view returns(Paper[] memory){
+        Paper[] memory paperList = new Paper[](paperId);
+        for(uint256 i;i<paperId;i++){
+            paperList[i] = Papers[i];
+        }
+        return paperList;
+    }
+
     function setAdmin(address _address, bool _bool) external onlyOwner {
         AdminList[_address] = _bool;
     }
 
     function setCiteFee(uint256 price) external onlyOwner {
         citeFee = price;
+    }
+
+    function setAuthorIntro(string memory _introCid) external {
+        AuthorIntro[msg.sender] = _introCid;
     }
 }

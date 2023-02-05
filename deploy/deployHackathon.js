@@ -24,13 +24,13 @@ async function main() {
     // let paper = await fil.getPaper(paperId)
     // console.log("paper详情", paper)
     // // 获得引用数
-    // let citeNum = await fil.getCiteCount(paperId)
-    // console.log("引用数", citeNum)
-    // // 获得被引用数
-    // let citedNum = await fil.getCitedCount(paperId)
-    // console.log("被引用数", citedNum)
+    // // let citeNum = await fil.getCiteCount(paperId)
+    // // console.log("引用数", citeNum)
+    // // // 获得被引用数
+    // // let citedNum = await fil.getCitedCount(paperId)
+    // // console.log("被引用数", citedNum)
     // paperList = await fil.getPaperList()
-    // console.log(paperList)
+    // console.log('论文列表',paperList)
     // console.dir(paperList[1]["citeTargetList"])
     console.log("Greeter deployed to:", fil.address)
 }
